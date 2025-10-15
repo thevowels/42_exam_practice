@@ -6,7 +6,7 @@
 /*   By: aphyo-ht <aphyo-ht@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:25:29 by aphyo-ht          #+#    #+#             */
-/*   Updated: 2025/10/15 13:33:37 by aphyo-ht         ###   ########.fr       */
+/*   Updated: 2025/10/16 01:42:13 by aphyo-ht         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ int		ft_strcmp(char *s1, char *s2)
 	{
 		if(*s1 != *s2)
 			return (*s1 - *s2);
+		s1++;
+		s2++;
 	}
 	if(*s1)
 		return (*s1);
@@ -33,7 +35,7 @@ int		ft_strcmp(char *s1, char *s2)
 int main(void)
 {
 	char *s1 = "asdf";
-	char *s2 = "b";
+	char *s2 = "asdz";
 
 	printf("Result %d \n", ft_strcmp(s1,s2));
 }
