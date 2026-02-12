@@ -120,13 +120,40 @@ int	str_append_mem(char **s1, char *s2, size_t size2)
 	*s1 = tmp;
 	return (1);
 }
+/*
 
-int	str_append_str(char **s1, char s2)
+broken_gnl_step1.c:126:43: error: incompatible integer to pointer conversion passing 'char' to parameter of type 'char *'; take the address with & [-Wint-conversion]
+        return (str_append_mem(s1, s2, ft_strlen(s2)));
+                                                 ^~
+	Problem:
+		incompatible int to pointer conversion.
+	Current Fix:
+		change the parameter from char to char * as the function name suggests str_append_str so both parameters should be somehow compatible with str.
+*/
+
+int	str_append_str(char **s1, char *s2)
 {
 	return (str_append_mem(s1, s2, ft_strlen(s2)));
 }
+/*
 
-void	ft_memmove(void *dest, const void *src, size_t n)
+broken_gnl_step1.c:144:3: error: void function 'ft_memmove' should not return a value [-Wreturn-type]
+                return (ft_memcpy(dest, src, n));
+                ^      ~~~~~~~~~~~~~~~~~~~~~~~~~
+broken_gnl_step1.c:146:3: error: void function 'ft_memmove' should not return a value [-Wreturn-type]
+                return (dest);
+                ^      ~~~~~~
+
+	Problem:
+		void function returning values
+	
+	Current fix:
+		if you check man memmove, you can see it return void * (pointer to any type)
+		change the return type from void to void *
+
+
+*/
+void	*ft_memmove(void *dest, const void *src, size_t n)
 {
 	size_t	i;
 
