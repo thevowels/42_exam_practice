@@ -105,6 +105,8 @@ char	*get_next_line(int fd)
 		printf("Loop Start\n");
 		if (!str_append_str(&ret, b))
 			return (NULL);
+		printf("Hello\n");
+
 		b[0] = '\0';
 		read_ret = read(fd, b, BUFFER_SIZE);
 		if (read_ret == -1)
