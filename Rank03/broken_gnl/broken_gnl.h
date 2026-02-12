@@ -6,4 +6,6 @@
 # endif
 
 #include <stdlib.h>
+#include <unistd.h>
+
 # endif

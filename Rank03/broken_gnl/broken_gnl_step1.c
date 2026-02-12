@@ -153,6 +153,21 @@ broken_gnl_step1.c:146:3: error: void function 'ft_memmove' should not return a 
 
 
 */
+
+/*
+broken_gnl_step1.c:168:24: warning: cast to smaller integer type 'char' from 'const void *' [-Wvoid-pointer-to-int-cast]
+                ((char *)dest)[i] = ((char)src)[i];
+
+	Problem:
+		you can see type mismatch problem
+		If you read a little bit carefully, you can see you are converting to char from (void *) type 
+		void * can be (int *) (char *) , etc.
+
+	Current Fix:
+		If you check the left side of assignment operator, you can see that its type is (char *).
+		I'll just make the right side char * too
+*/
+
 void	*ft_memmove(void *dest, const void *src, size_t n)
 {
 	size_t	i;
@@ -165,14 +180,55 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	while (i > 0)
 	{
 		i--;
-		((char *)dest)[i] = ((char)src)[i];
+		((char *)dest)[i] = ((char *)src)[i];
 	}
 	return (dest);
 }
+/*
 
-char	get_next_line(int fd)
+broken_gnl_step1.c:190:36: error: expected expression
+        static char b[BUFFER_SIZE + 1] = ();
+	
+	Problem:
+		Pure syntax error.
+	
+	Current fix;
+		we can just initialize without any assignment or assign \0 inside the values.
+		I'll initialize the \0 array.
+
+*/
+/*
+
+broken_gnl_step1.c:211:11: error: incompatible pointer to integer conversion returning 'void *' from a function with result type 'char' [-Wint-conversion]
+                        return (NULL);
+
+	Problem:
+		returning (void *)  while function return type is char
+
+	Current Fix:
+		The purpose of get_next_line is to return the string not the char. 
+		We change the return type to char *.
+
+*/
+/*
+
+broken_gnl_step1.c:226:14: warning: call to undeclared function 'read'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                read_ret = read(fd, b, BUFFER_SIZE);
+		
+		Problem:
+			Undeclared function.
+
+		Current Fix:
+			As we can see, C compiler is saying read() as undeclared function as we didn't add the responsible header.
+			If you don't know the header, its ok just use 'man 3 read' 3 means the manual of the standard C library functions.
+			The lib we need to import is <unistd.h> we'll add this into header file
+		
+
+
+*/
+char	*get_next_line(int fd)
 {
-	static char b[BUFFER_SIZE + 1] = ();
+	static char b[BUFFER_SIZE + 1] = {0};
 	char *ret;
 	int read_ret;
 
