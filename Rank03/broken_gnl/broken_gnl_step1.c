@@ -76,12 +76,39 @@ size_t	ft_strlen(char *s)
 	return (ret);
 }
 
+/*
+
+broken_gnl_step1.c:84:25: warning: incompatible pointer types passing 'char **' to parameter of type 'char *'; dereference with * [-Wincompatible-pointer-types]
+        size1 = s1 ? ft_strlen(s1) : 0;
+                               ^~
+                               *
+broken_gnl_step1.c:66:24: note: passing argument to parameter 's' here
+size_t  ft_strlen(char *s)
+
+	here we can see the errror log.
+	If you are using vscode, the errors are on red, warning on some color and there is note with just grey color.
+	Here its showing line 66 , function declaration of ft_strlen. But thats just pointing out us to see the function.
+	There is nothing wrong about note.
+	We've to focus on warning message.
+
+	What we get from error message:
+		imcompitable type
+	What we have to do?
+		we have to  change the types
+
+	Current fix?
+		I'll just take a hunch and change the type of s1 into char * instead of char ** on str_append_mem function declaration
+	
+	After fix, I still got the error so how about changing the parameter passed into strlen instead of function definition.?
+		Yeah it worked, atleast there is no more warning inside the str_append_mem.
+
+*/
 int	str_append_mem(char **s1, char *s2, size_t size2)
 {
 	size_t	size1;
 	char	*tmp;
 
-	size1 = s1 ? ft_strlen(s1) : 0;
+	size1 = s1 ? ft_strlen(*s1) : 0;
 	tmp = malloc(size2 + size1 + 1);
 	if (!tmp)
 		return (0);
