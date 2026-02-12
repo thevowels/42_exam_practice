@@ -77,6 +77,18 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	}
 	return (dest);
 }
+/*
+	We've fixed the compile errors and now time to fix the logical errors.
+	We can do in two ways.
+		1: with manual print
+		2: with gdb
+
+*/
+#include <stdio.h>
+/*
+	If you compile and run the program, you can see that There is an error before the end of the loop.
+	We've to fix that.
+*/
 char	*get_next_line(int fd)
 {
 	static char	b[BUFFER_SIZE + 1] = {0};
@@ -84,10 +96,13 @@ char	*get_next_line(int fd)
 	int			read_ret;
 	char		*tmp;
 
+	printf("GNL Called\n");
 	ret = NULL;
 	tmp = ft_strchr(b, '\n');
+	printf("Before Loop\n");
 	while (!tmp)
 	{
+		printf("Loop Start\n");
 		if (!str_append_str(&ret, b))
 			return (NULL);
 		b[0] = '\0';
@@ -98,6 +113,7 @@ char	*get_next_line(int fd)
 			break ;
 		b[read_ret] = 0;
 		tmp = ft_strchr(b, '\n');
+		printf("Loop end\n");
 	}
 	if (tmp)
 	{
