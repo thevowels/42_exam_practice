@@ -1,5 +1,10 @@
-#include "get_next_line.h"
+/*************************************************************************************** */
+
+#include "broken_gnl.h"
+
 #include <stdio.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 char	*ft_strchr(char *s, int c)
 {
@@ -39,6 +44,7 @@ size_t	ft_strlen(char *s)
 	}
 	return (ret);
 }
+
 int	str_append_mem(char **s1, char *s2, size_t size2)
 {
 	size_t	size1;
@@ -61,6 +67,7 @@ int	str_append_str(char **s1, char *s2)
 {
 	return (str_append_mem(s1, s2, ft_strlen(s2)));
 }
+
 void	*ft_memmove(void *dest, const void *src, size_t n)
 {
 	size_t	i;
@@ -77,16 +84,18 @@ void	*ft_memmove(void *dest, const void *src, size_t n)
 	}
 	return (dest);
 }
-#include <string.h>
+
 char	*get_next_line(int fd)
 {
-	char		*b;
-	static char	*ret;
-	int			read_ret;
-	char		*tmp;
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (0);
+	// char *b[BUFFER_SIZE + 1];
+	char *b;
+	static char *ret = NULL;
+	int read_ret;
+	char *tmp;
+
 	b = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if(!b || fd < 0 )
+		return (NULL);
 	if(ret)
 		tmp = ft_strchr(ret, '\n');
 	else
@@ -96,53 +105,57 @@ char	*get_next_line(int fd)
 		b[0] = '\0';
 		read_ret = read(fd, b, BUFFER_SIZE);
 		if (read_ret == -1)
-			return (free(b),NULL);
+			return (NULL);
 		if (read_ret == 0)
 			break ;
 		b[read_ret] = 0;
 		if (!str_append_str(&ret, b))
-			return (free(b),NULL);
-		tmp = ft_strchr(b, '\n');
+			return (NULL);
+		tmp = ft_strchr(ret, '\n');
 	}
 	if (tmp)
 	{
-		tmp = NULL;
-		if (!str_append_mem(&tmp, ret, (ft_strchr(ret,'\n') - ret) + 1 ))
+		free(b);
+		b = NULL;
+
+		if (!str_append_mem(&b, ret, tmp - ret + 1))
 		{
 			free(ret);
-			return (free(b),NULL);
+			return (NULL);
 		}
-		ft_memmove(ret, ft_strchr(ret,'\n')+1 , ft_strlen((ft_strchr(ret,'\n')) + 1) + 1);
+		ft_memmove(ret, tmp +1,ft_strlen(tmp +1) +1);
 	}
 	else
 	{
+		// b[0] = '\0';
+		if(b)
+			free(b);
+		b  = NULL;
 		if (!ret || !*ret)
-		{
-			free(ret);
-			return (free(b),NULL);
-		}
-		if(!str_append_mem(&tmp,ret,ft_strlen(ret)))
-		{
-			free(ret);
-			return(free(b),NULL);
-		}
+			return(free(ret),NULL);
+		if(!str_append_mem(&b,ret,ft_strlen(ret)))
+			return(free(ret),NULL);
 		free(ret);
 		ret = NULL;
 	}
-	return (free(b),tmp);
+	return (b);
 }
 
-#include <fcntl.h>
-
-int	main(void)
+int main(void)
 {
-	int fd = open("get_next_line.c", O_RDONLY);
+	int fd;
 
-	char *str = get_next_line(fd);
-	while(str)
+	fd = open("broken_gnl.c", O_RDONLY);
+
+	char *str;
+
+	str = NULL;
+	while(1)
 	{
-		printf("%s\n",str);
-		free(str);
 		str = get_next_line(fd);
+		if(!str)
+			break;
+		printf("%s", str);
 	}
+
 }
